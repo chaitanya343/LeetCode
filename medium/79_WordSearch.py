@@ -25,7 +25,6 @@ def exist(board, word) -> bool:
 
         return False
             
-
     for i in range(m):
         for j in range(n):
             if board[i][j] == word[0]:

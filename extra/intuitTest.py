@@ -54,23 +54,95 @@ import math
 
 def findContiguousHistory(userX, userY):
     maxK = -math.inf
+    maxXStart = None
     for ux in userX:
         for uy in userY:
             if ux == uy:
                 ix = userX.index(ux)
                 iy = userY.index(uy)
-                print(ux, uy)
                 checkMore = True
                 k = 0
                 while checkMore:
                     if ix+k<len(userX) and iy+k<len(userY) and userX[ix+k] == userY[iy+k]:
                         k+=1
+                        #print("Match", userX[ix:ix+k], userY[iy:iy+k])
                     else:
-                        print("Broke", userX[ix+k], userY[iy+k])
+                        #print("Broke", userX[ix:ix+k], userY[iy:iy+k])
                         checkMore = False
-                maxK = max(maxK, k)
-                print(userX[ix:ix+maxK])
+                if maxK<k:
+                    maxXStart = ix
+                    maxK = k
+            #print(maxK, userX[maxXStart : maxXStart+maxK])
+    return userX[maxXStart : maxXStart+maxK]
                         
 
-findContiguousHistory(user0, user1)    
+print(findContiguousHistory(user0, user1))  
                 
+
+### Final
+
+
+# Design and code a system that helps teams select the best engineer at any given moment. This system handles 3 types of requests:
+# - Add an engineer for consideration
+# - Hire the current highest-rated engineer
+# - Hire the current highest-rated engineer who can start on or before N days
+
+# An engineer has a unique id, an integer representing the days before they can start, and a list of 5 integers, ranging from 0 to 10, representing their skill ratings over 5 skills (example: software engineering, communication, etc). For simplicity, let’s ignore concurrency issues by assuming that only 1 request will be processed in the system at a time. 
+
+
+
+import heapq
+import math
+skills = ['software engineering', 'communication']
+
+class Engineer:
+    
+    def __init__(self, id, nToStart, skillList):
+        self.id = id
+        self.nToStart = nToStart
+        self.skillList = skillList
+    
+    # def __repr__(self):
+    #     return "Engineer: id="+str(self.id)+", nToStart="+int(self.nToStart)+", skillList="+str(self.skillList)
+        
+engineersForConsideration = []
+engineersHired = []
+
+def addEngineer(engineer):
+    engineersForConsideration.append(engineer)
+
+bestEngineers = []
+heapq.heapify(bestEngineers)
+
+for engg in engineersForConsideration:
+    # bestEngineers.heappush(engg, -1 * sum(engg.skillList))
+    heapq.heappush(bestEngineers, (engg, -1 * sum(engg.skillList)))
+
+def hireBestEngineer(n = math.inf):
+    if n == math.inf:
+        engineersHired.append(heapq.heappop(bestEngineers))
+    else:
+        while bestEngineers:
+            enggToHire = heapq.heappop(bestEngineers)
+            if enggToHire.nToStart <= n:
+                engineersHired.append(enggToHire)
+                break
+            
+def main():
+    addEngineer(Engineer(1, 1, [5, 5]))
+    print("add 1", engineersForConsideration)
+    addEngineer(Engineer(2, 3, [5, 5]))
+    print("add 2", engineersForConsideration)
+    addEngineer(Engineer(3, 10, [5, 10]))
+    print("add 3", engineersForConsideration)
+    
+    hireBestEngineer()
+    print("1", engineersHired)
+    hireBestEngineer(2)
+    print("2", engineersHired)
+    hireBestEngineer(11)
+    print("3", engineersHired)
+
+main()
+
+    

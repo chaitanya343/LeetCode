@@ -6,7 +6,7 @@
 
 
 def getIntersectionNode_withSet(headA, headB):
-    # Store 1 list in a Set and Seach each of the other in the set
+    # Store 1 list in a Set and Search each of the other in the set
     setA = set()
     while headA != None:
         setA.add(headA)

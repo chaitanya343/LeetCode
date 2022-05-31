@@ -16,7 +16,8 @@ def twoSumLessThanK_optimal(nums, k):
         if x < k: 
             lo += 1
             ans = max(ans, x)
-        else: hi -= 1
+        else: 
+            hi -= 1
     return ans
 
 print(twoSumLessThanK([34,23,1,24,75,33,54,8], 60))
